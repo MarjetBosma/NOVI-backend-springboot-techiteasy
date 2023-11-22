@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 
 @RestController
+@RequestMapping("/televisions")
+
 public class TelevisionController {
-    private ArrayList<String> tvList = new ArrayList<>();
+    private ArrayList<String> televisionDatabase = new ArrayList<>();
 
     @GetMapping("/showTv")
     public ResponseEntity<Object> showTvList() {
-    return ResponseEntity.ok("Lijst van alle tv's");
+        return ResponseEntity.ok("Lijst van alle tv's: " + televisionDatabase);
     }
 
     @PostMapping("/addTv")
@@ -22,27 +24,30 @@ public class TelevisionController {
         } else if (tv.length() < 4) {
             throw new NameNotApprovedException("Tv-naam is kleiner dan 4 karakters");
         } else {
-            this.tvList.add(tv);
-            return ResponseEntity.created(null).body(tv + " tv toegevoegd");
+            this.televisionDatabase.add(tv);
+            return ResponseEntity.created(null).body("Tv toegevoegd: " + tv);
         }
     }
 
     @GetMapping("/showTv/{id}")
-    public ResponseEntity<Object> tv(@PathVariable ("id") int id, @RequestBody String name) {
-        if (id < 10) {
-            return ResponseEntity.ok(id + " Dit is een tv");
-        } else {
-            throw new RecordNotFoundException("Getal is hoger dan 10");
-        }
+    public ResponseEntity<Object> showTv(@PathVariable ("id") int id) {
+        return ResponseEntity.ok(televisionDatabase.get(id));
     }
 
-    @PutMapping("/changeTvList/{id}")
-    public ResponseEntity<Object> tvList(@PathVariable ("id") int id) {
-        return ResponseEntity.noContent().build();
+    @PutMapping("/changeTv/{id}")
+    public ResponseEntity<Object> changeTv(@PathVariable ("id") int id, @RequestBody String tv) {
+        if (televisionDatabase.isEmpty() || id>televisionDatabase.size()) {
+            throw new RecordNotFoundException("Id-nummer " + id + " staat niet in de database.");
+            // Ik krijg niet bovenstaande melding, maar de standaardmelding uit de exceptionhandler.
+        } else {
+            televisionDatabase.set(id, tv);
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @DeleteMapping("/deleteTv/{id}")
     public ResponseEntity<Object> deleteTv(@PathVariable ("id") int id) {
+        televisionDatabase.set(id, null);
         return ResponseEntity.noContent().build();
     }
 }

@@ -14,6 +14,12 @@ public class ExceptionController {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(value = IndexOutOfBoundsException.class)
+    public ResponseEntity<Object> exception(IndexOutOfBoundsException exception) {
+
+        return new ResponseEntity<>("Dit id staat niet in de database", HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(value = NameNotApprovedException.class)
     public ResponseEntity<Object> nameNotApproved(NameNotApprovedException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
