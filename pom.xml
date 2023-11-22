@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>nl.novi</groupId>
-	<artifactId>backend-springboot-techiteasy</artifactId>
+	<artifactId>backend-springboot-techiteasy-controller</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>backend-springboot-techiteasy</name>
 	<description>Demo project for Spring Boot</description>
