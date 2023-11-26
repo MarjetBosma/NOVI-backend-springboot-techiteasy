@@ -1,53 +1,37 @@
 package nl.novi.techiteasy.controllers;
 import nl.novi.techiteasy.exceptions.NameNotApprovedException;
 import nl.novi.techiteasy.exceptions.RecordNotFoundException;
+import nl.novi.techiteasy.models.Television;
+import nl.novi.techiteasy.repositories.TelevisionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/televisions")
 
 public class TelevisionController {
-    private ArrayList<String> televisionDatabase = new ArrayList<>();
 
-    @GetMapping("/showTv")
-    public ResponseEntity<Object> showTvList() {
-        return ResponseEntity.ok("Lijst van alle tv's: " + televisionDatabase);
-    }
+    @Autowired private TelevisionRepository televisionRepository;
+
+//    @GetMapping("/showTv")
+//    public ResponseEntity<Television> showTvList() {
+//        return ResponseEntity.ok("Lijst van alle tv's: ");
+//    }
 
     @PostMapping("/addTv")
-    public ResponseEntity<Object> addTv(@RequestBody String tv) {
-        if (tv.length() > 20) {
-            throw new NameNotApprovedException("Tv-naam is groter dan 20 karakters");
-        } else if (tv.length() < 4) {
-            throw new NameNotApprovedException("Tv-naam is kleiner dan 4 karakters");
-        } else {
-            this.televisionDatabase.add(tv);
-            return ResponseEntity.created(null).body("Tv toegevoegd: " + tv);
-        }
+    public ResponseEntity<Television> addTv(@RequestBody Television television) {
+        Television savedTelevision = televisionRepository.save(television);
+        return ResponseEntity.created(null).body(savedTelevision);
     }
 
     @GetMapping("/showTv/{id}")
-    public ResponseEntity<Object> showTv(@PathVariable ("id") int id) {
-        return ResponseEntity.ok(televisionDatabase.get(id));
-    }
-
-    @PutMapping("/changeTv/{id}")
-    public ResponseEntity<Object> changeTv(@PathVariable ("id") int id, @RequestBody String tv) {
-        if (televisionDatabase.isEmpty() || id>televisionDatabase.size()) {
-            throw new RecordNotFoundException("Id-nummer " + id + " staat niet in de database.");
-            // Ik krijg niet bovenstaande melding, maar de standaardmelding uit de exceptionhandler.
-        } else {
-            televisionDatabase.set(id, tv);
-            return ResponseEntity.noContent().build();
-        }
-    }
-
-    @DeleteMapping("/deleteTv/{id}")
-    public ResponseEntity<Object> deleteTv(@PathVariable ("id") int id) {
-        televisionDatabase.set(id, null);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Television> showTv(@PathVariable ("id") long id) {
+        Optional<Television> savedTelevision = televisionRepository.findById(id);
+        return ResponseEntity.ok(savedTelevision.get());
     }
 }
