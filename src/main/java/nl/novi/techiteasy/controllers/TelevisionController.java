@@ -1,5 +1,4 @@
 package nl.novi.techiteasy.controllers;
-import nl.novi.techiteasy.exceptions.NameNotApprovedException;
 import nl.novi.techiteasy.exceptions.RecordNotFoundException;
 import nl.novi.techiteasy.models.Television;
 import nl.novi.techiteasy.repositories.TelevisionRepository;
@@ -7,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -18,20 +16,64 @@ public class TelevisionController {
 
     @Autowired private TelevisionRepository televisionRepository;
 
-//    @GetMapping("/showTv")
-//    public ResponseEntity<Television> showTvList() {
-//        return ResponseEntity.ok("Lijst van alle tv's: ");
-//    }
+    @GetMapping()
+    public ResponseEntity<List<Television>> showTvList() {
+        List<Television> televisions;
+        televisions = televisionRepository.findAll();
+        return ResponseEntity.ok().body(televisions);
+    }
 
-    @PostMapping("/addTv")
+    @PostMapping()
     public ResponseEntity<Television> addTv(@RequestBody Television television) {
         Television savedTelevision = televisionRepository.save(television);
         return ResponseEntity.created(null).body(savedTelevision);
     }
 
-    @GetMapping("/showTv/{id}")
-    public ResponseEntity<Television> showTv(@PathVariable ("id") long id) {
-        Optional<Television> savedTelevision = televisionRepository.findById(id);
-        return ResponseEntity.ok(savedTelevision.get());
+    @GetMapping("/{id}")
+    public ResponseEntity<Television> showTv(@PathVariable ("id") Long id) {
+        Optional<Television> television = televisionRepository.findById(id);
+        if (television.isEmpty()) {
+            throw new RecordNotFoundException("Id " + id + " not found ");
+        } else {
+            Television foundTelevision = television.get();
+            return ResponseEntity.ok().body(foundTelevision);
+        }
     }
-}
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteTelevision (@PathVariable("id") Long id){
+        televisionRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Television> updateTelevision (@PathVariable("id") Long id, @RequestBody Television
+    updatedTelevision) {
+        Optional<Television> television = televisionRepository.findById(id);
+            if (television.isEmpty()) {
+                throw new RecordNotFoundException("Id " + id + " not found ");
+            } else {
+                Television television1 = television.get();
+                television1.setAmbiLight(updatedTelevision.getAmbiLight());
+                television1.setAvailableSize(updatedTelevision.getAvailableSize());
+                television1.setAmbiLight(updatedTelevision.getAmbiLight());
+                television1.setBluetooth(updatedTelevision.getBluetooth());
+                television1.setBrand(updatedTelevision.getBrand());
+                television1.setHdr(updatedTelevision.getHdr());
+                television1.setName(updatedTelevision.getName());
+                television1.setOriginalStock(updatedTelevision.getOriginalStock());
+                television1.setPrice(updatedTelevision.getPrice());
+                television1.setRefreshRate(updatedTelevision.getRefreshRate());
+                television1.setScreenQuality(updatedTelevision.getScreenQuality());
+                television1.setScreenType(updatedTelevision.getScreenType());
+                television1.setSmartTv(updatedTelevision.getSmartTv());
+                television1.setSold(updatedTelevision.getSold());
+                television1.setType(updatedTelevision.getType());
+                television1.setVoiceControl(updatedTelevision.getVoiceControl());
+                television1.setWifi(updatedTelevision.getWifi());
+                Television returnTelevision = televisionRepository.save(television1);
+                return ResponseEntity.ok().body(returnTelevision);
+            }
+        }
+            // Bij de PutMapping was ik niet helemaal zelf uitgekomen, ik heb ik de uitwerkingen gekeken. Dit werkt nu, maar ik heb nog niet het idee dat ik alle onderdelen echt doorgrond.
+    }
