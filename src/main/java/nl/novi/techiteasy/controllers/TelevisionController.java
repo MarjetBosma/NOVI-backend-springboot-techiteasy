@@ -1,53 +1,79 @@
 package nl.novi.techiteasy.controllers;
-import nl.novi.techiteasy.exceptions.NameNotApprovedException;
 import nl.novi.techiteasy.exceptions.RecordNotFoundException;
+import nl.novi.techiteasy.models.Television;
+import nl.novi.techiteasy.repositories.TelevisionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/televisions")
 
 public class TelevisionController {
-    private ArrayList<String> televisionDatabase = new ArrayList<>();
 
-    @GetMapping("/showTv")
-    public ResponseEntity<Object> showTvList() {
-        return ResponseEntity.ok("Lijst van alle tv's: " + televisionDatabase);
+    @Autowired private TelevisionRepository televisionRepository;
+
+    @GetMapping()
+    public ResponseEntity<List<Television>> showTvList() {
+        List<Television> televisions;
+        televisions = televisionRepository.findAll();
+        return ResponseEntity.ok().body(televisions);
     }
 
-    @PostMapping("/addTv")
-    public ResponseEntity<Object> addTv(@RequestBody String tv) {
-        if (tv.length() > 20) {
-            throw new NameNotApprovedException("Tv-naam is groter dan 20 karakters");
-        } else if (tv.length() < 4) {
-            throw new NameNotApprovedException("Tv-naam is kleiner dan 4 karakters");
+    @PostMapping()
+    public ResponseEntity<Television> addTv(@RequestBody Television television) {
+        Television savedTelevision = televisionRepository.save(television);
+        return ResponseEntity.created(null).body(savedTelevision);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Television> showTv(@PathVariable ("id") Long id) {
+        Optional<Television> television = televisionRepository.findById(id);
+        if (television.isEmpty()) {
+            throw new RecordNotFoundException("Id " + id + " not found ");
         } else {
-            this.televisionDatabase.add(tv);
-            return ResponseEntity.created(null).body("Tv toegevoegd: " + tv);
+            Television foundTelevision = television.get();
+            return ResponseEntity.ok().body(foundTelevision);
         }
     }
 
-    @GetMapping("/showTv/{id}")
-    public ResponseEntity<Object> showTv(@PathVariable ("id") int id) {
-        return ResponseEntity.ok(televisionDatabase.get(id));
-    }
-
-    @PutMapping("/changeTv/{id}")
-    public ResponseEntity<Object> changeTv(@PathVariable ("id") int id, @RequestBody String tv) {
-        if (televisionDatabase.isEmpty() || id>televisionDatabase.size()) {
-            throw new RecordNotFoundException("Id-nummer " + id + " staat niet in de database.");
-            // Ik krijg niet bovenstaande melding, maar de standaardmelding uit de exceptionhandler.
-        } else {
-            televisionDatabase.set(id, tv);
-            return ResponseEntity.noContent().build();
-        }
-    }
-
-    @DeleteMapping("/deleteTv/{id}")
-    public ResponseEntity<Object> deleteTv(@PathVariable ("id") int id) {
-        televisionDatabase.set(id, null);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteTelevision (@PathVariable("id") Long id){
+        televisionRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-}
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Television> updateTelevision (@PathVariable("id") Long id, @RequestBody Television
+    updatedTelevision) {
+        Optional<Television> television = televisionRepository.findById(id);
+            if (television.isEmpty()) {
+                throw new RecordNotFoundException("Id " + id + " not found ");
+            } else {
+                Television television1 = television.get();
+                television1.setAmbiLight(updatedTelevision.getAmbiLight());
+                television1.setAvailableSize(updatedTelevision.getAvailableSize());
+                television1.setAmbiLight(updatedTelevision.getAmbiLight());
+                television1.setBluetooth(updatedTelevision.getBluetooth());
+                television1.setBrand(updatedTelevision.getBrand());
+                television1.setHdr(updatedTelevision.getHdr());
+                television1.setName(updatedTelevision.getName());
+                television1.setOriginalStock(updatedTelevision.getOriginalStock());
+                television1.setPrice(updatedTelevision.getPrice());
+                television1.setRefreshRate(updatedTelevision.getRefreshRate());
+                television1.setScreenQuality(updatedTelevision.getScreenQuality());
+                television1.setScreenType(updatedTelevision.getScreenType());
+                television1.setSmartTv(updatedTelevision.getSmartTv());
+                television1.setSold(updatedTelevision.getSold());
+                television1.setType(updatedTelevision.getType());
+                television1.setVoiceControl(updatedTelevision.getVoiceControl());
+                television1.setWifi(updatedTelevision.getWifi());
+                Television returnTelevision = televisionRepository.save(television1);
+                return ResponseEntity.ok().body(returnTelevision);
+            }
+        }
+            // Bij de PutMapping was ik niet helemaal zelf uitgekomen, ik heb ik de uitwerkingen gekeken. Dit werkt nu, maar ik heb nog niet het idee dat ik alle onderdelen echt doorgrond.
+    }
