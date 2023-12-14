@@ -1,4 +1,4 @@
-package nl.novi.techiteasy.dtos;
+package nl.novi.techiteasy.dtos.television;
 
 import java.time.LocalDate;
 

@@ -1,9 +1,9 @@
 package nl.novi.techiteasy.controllers;
-import nl.novi.techiteasy.dtos.TelevisionDto;
+import nl.novi.techiteasy.dtos.television.TelevisionDto;
 import nl.novi.techiteasy.services.TelevisionService;
 import nl.novi.techiteasy.exceptions.RecordNotFoundException;
 import nl.novi.techiteasy.exceptions.ValidationException;
-import nl.novi.techiteasy.dtos.TelevisionInputDto;
+import nl.novi.techiteasy.dtos.television.TelevisionInputDto;
 import nl.novi.techiteasy.models.Television;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -12,7 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import static nl.novi.techiteasy.controllers.ControllerHelper.checkForBindingResult;
 
@@ -43,14 +42,14 @@ public class TelevisionController {
         }
     }
 
-    @DeleteMapping("/televisions/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Television> deleteTelevision(@PathVariable long id){
 
         televisionService.deleteTelevision(id);
         return ResponseEntity.noContent().build();
 
     }
-    @PostMapping("/televisions")
+    @PostMapping
     public ResponseEntity<TelevisionDto> addTelevision(@RequestBody TelevisionInputDto televisionInputDto, BindingResult br){
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
@@ -64,7 +63,7 @@ public class TelevisionController {
         }
     }
 
-    @PutMapping("televisions/{id}")
+    @PutMapping(/{id})
     public ResponseEntity<TelevisionDto> updateTelevision(@PathVariable long id, @RequestBody Television television ) {
         TelevisionDto changeTelevisionId = televisionService.updateTelevision(id, television);
 

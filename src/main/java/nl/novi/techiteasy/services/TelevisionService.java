@@ -1,7 +1,7 @@
 package nl.novi.techiteasy.services;
 
-import nl.novi.techiteasy.dtos.TelevisionDto;
-import nl.novi.techiteasy.dtos.TelevisionInputDto;
+import nl.novi.techiteasy.dtos.television.TelevisionDto;
+import nl.novi.techiteasy.dtos.television.TelevisionInputDto;
 import nl.novi.techiteasy.exceptions.RecordNotFoundException;
 import nl.novi.techiteasy.models.Television;
 import nl.novi.techiteasy.repositories.TelevisionRepository;
