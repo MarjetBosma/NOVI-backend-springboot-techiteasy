@@ -1,79 +1,73 @@
 package nl.novi.techiteasy.controllers;
+import nl.novi.techiteasy.dtos.TelevisionDto;
+import nl.novi.techiteasy.services.TelevisionService;
 import nl.novi.techiteasy.exceptions.RecordNotFoundException;
+import nl.novi.techiteasy.exceptions.ValidationException;
+import nl.novi.techiteasy.dtos.TelevisionInputDto;
 import nl.novi.techiteasy.models.Television;
-import nl.novi.techiteasy.repositories.TelevisionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+
+import static nl.novi.techiteasy.controllers.ControllerHelper.checkForBindingResult;
 
 @RestController
 @RequestMapping("/televisions")
 
 public class TelevisionController {
 
-    @Autowired private TelevisionRepository televisionRepository;
+    private final TelevisionService televisionService;
 
-    @GetMapping()
-    public ResponseEntity<List<Television>> showTvList() {
-        List<Television> televisions;
-        televisions = televisionRepository.findAll();
-        return ResponseEntity.ok().body(televisions);
+    public TelevisionController(TelevisionService televisionService) {
+        this.televisionService = televisionService;
     }
 
-    @PostMapping()
-    public ResponseEntity<Television> addTv(@RequestBody Television television) {
-        Television savedTelevision = televisionRepository.save(television);
-        return ResponseEntity.created(null).body(savedTelevision);
+
+    @GetMapping
+    public ResponseEntity<List<TelevisionDto>> getAllTelevisions(){
+        return ResponseEntity.ok(televisionService.getAllTelevisions());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Television> showTv(@PathVariable ("id") Long id) {
-        Optional<Television> television = televisionRepository.findById(id);
-        if (television.isEmpty()) {
-            throw new RecordNotFoundException("Id " + id + " not found ");
+    public ResponseEntity<TelevisionDto> getTelevision(@PathVariable long id){
+        if (id > 0) {
+            TelevisionDto televisionDto = televisionService.getTelevisionId(id);
+            return ResponseEntity.ok(televisionDto);
         } else {
-            Television foundTelevision = television.get();
-            return ResponseEntity.ok().body(foundTelevision);
+            throw new RecordNotFoundException("there is no television");
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTelevision (@PathVariable("id") Long id){
-        televisionRepository.deleteById(id);
+    @DeleteMapping("/televisions/{id}")
+    public ResponseEntity<Television> deleteTelevision(@PathVariable long id){
+
+        televisionService.deleteTelevision(id);
         return ResponseEntity.noContent().build();
+
+    }
+    @PostMapping("/televisions")
+    public ResponseEntity<TelevisionDto> addTelevision(@RequestBody TelevisionInputDto televisionInputDto, BindingResult br){
+        if (br.hasFieldErrors()) {
+            throw new ValidationException(checkForBindingResult(br));
+        } else {
+            TelevisionDto savedTelevision = televisionService.createTelevision(televisionInputDto);
+            URI uri = URI.create(
+                    ServletUriComponentsBuilder
+                            .fromCurrentRequest()
+                            .path("/" + savedTelevision.id).toUriString());
+            return ResponseEntity.created(uri).body(savedTelevision);
+        }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Television> updateTelevision (@PathVariable("id") Long id, @RequestBody Television
-    updatedTelevision) {
-        Optional<Television> television = televisionRepository.findById(id);
-            if (television.isEmpty()) {
-                throw new RecordNotFoundException("Id " + id + " not found ");
-            } else {
-                Television television1 = television.get();
-                television1.setAmbiLight(updatedTelevision.getAmbiLight());
-                television1.setAvailableSize(updatedTelevision.getAvailableSize());
-                television1.setAmbiLight(updatedTelevision.getAmbiLight());
-                television1.setBluetooth(updatedTelevision.getBluetooth());
-                television1.setBrand(updatedTelevision.getBrand());
-                television1.setHdr(updatedTelevision.getHdr());
-                television1.setName(updatedTelevision.getName());
-                television1.setOriginalStock(updatedTelevision.getOriginalStock());
-                television1.setPrice(updatedTelevision.getPrice());
-                television1.setRefreshRate(updatedTelevision.getRefreshRate());
-                television1.setScreenQuality(updatedTelevision.getScreenQuality());
-                television1.setScreenType(updatedTelevision.getScreenType());
-                television1.setSmartTv(updatedTelevision.getSmartTv());
-                television1.setSold(updatedTelevision.getSold());
-                television1.setType(updatedTelevision.getType());
-                television1.setVoiceControl(updatedTelevision.getVoiceControl());
-                television1.setWifi(updatedTelevision.getWifi());
-                Television returnTelevision = televisionRepository.save(television1);
-                return ResponseEntity.ok().body(returnTelevision);
-            }
-        }
-            // Bij de PutMapping was ik niet helemaal zelf uitgekomen, ik heb ik de uitwerkingen gekeken. Dit werkt nu, maar ik heb nog niet het idee dat ik alle onderdelen echt doorgrond.
+    @PutMapping("televisions/{id}")
+    public ResponseEntity<TelevisionDto> updateTelevision(@PathVariable long id, @RequestBody Television television ) {
+        TelevisionDto changeTelevisionId = televisionService.updateTelevision(id, television);
+
+        return ResponseEntity.ok().body(changeTelevisionId);
     }
+}
