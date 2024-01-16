@@ -1,11 +1,14 @@
 package nl.novi.techiteasy.services;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import nl.novi.techiteasy.repositories.RemoteControllerRepository;
 import nl.novi.techiteasy.dtos.remotecontroller.RemoteControllerDto;
 import nl.novi.techiteasy.dtos.remotecontroller.RemoteControllerInputDto;
 import nl.novi.techiteasy.models.RemoteController;
 import nl.novi.techiteasy.exceptions.RecordNotFoundException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.Optional;
 @Service
 public class RemoteControllerService {
 
-private final RemoteControllerRepository rcRepos;
+private static RemoteControllerRepository rcRepos;
 
     public RemoteControllerService(RemoteControllerRepository rcRepos) {
         this.rcRepos = rcRepos;
@@ -31,21 +34,11 @@ private final RemoteControllerRepository rcRepos;
         return rcDtoList;
     }
 
-    public RemoteControllerDto getRemoteController(long id) {
-        Optional<RemoteController> remoteController = rcRepos.findById(id);
-        if(remoteController.isPresent()) {
-            return convertRemoteControllerToRemoteControllerDto(remoteController.get());
-        } else {
-            throw new RecordNotFoundException("No remote controller found");
-        }
-    }
-
-    public RemoteControllerDto createRemoteController(RemoteControllerInputDto createRemoteControllerDto){
+    public static RemoteControllerDto createRemoteController(RemoteControllerInputDto createRemoteControllerDto){
         RemoteController rcInputDto = convertRemoteControllerDtoToRemoteController(createRemoteControllerDto);
         rcRepos.save(rcInputDto);
         return convertRemoteControllerToRemoteControllerDto(rcInputDto);
     }
-
 
     public RemoteControllerDto addRemoteController(RemoteControllerInputDto rcDto) {
         RemoteController rc = convertRemoteControllerDtoToRemoteController(rcDto);
@@ -53,16 +46,17 @@ private final RemoteControllerRepository rcRepos;
         return convertRemoteControllerToRemoteControllerDto(rc);
     }
 
-    public void deleteRemoteController(Long id) {
+    public Boolean deleteRemoteController(long id) {
         rcRepos.deleteById(id);
+        return null;
     }
 
-    public void updateRemoteController(Long id, RemoteControllerDto rcDto) {
+    public static RemoteControllerDto updateRemoteController(Long id, RemoteControllerInputDto rcDto) {
         if (!rcRepos.existsById(id)) {
             throw new RecordNotFoundException("No remote controller found");
         } else {
             RemoteController storedRemoteController = rcRepos.findById(id).orElse(null);
-            storedRemoteController.setId(rcDto.id);
+            assert storedRemoteController != null;
             storedRemoteController.setCompatibleWith(rcDto.compatibleWith);
             storedRemoteController.setBatteryType(rcDto.batteryType);
             storedRemoteController.setName(rcDto.name);
@@ -72,11 +66,21 @@ private final RemoteControllerRepository rcRepos;
 
             rcRepos.save(storedRemoteController);
         }
+        return null;
     }
 
-    public RemoteControllerDto convertRemoteControllerToRemoteControllerDto(RemoteController rc) {
+    public RemoteControllerDto getRemoteControllerId(long id) {
+        Optional<RemoteController> remoteControllerId = rcRepos.findById(id);
+        if (remoteControllerId.isPresent()) {
+            RemoteController rc = remoteControllerId.get();
+            return convertRemoteControllerToRemoteControllerDto(rc);
+        } else {
+            throw new RecordNotFoundException("No remote controller found");
+        }
+    }
 
-       RemoteControllerDto rcDto = new RemoteControllerDto();
+    public static RemoteControllerDto convertRemoteControllerToRemoteControllerDto(RemoteController rc) {
+        RemoteControllerDto rcDto = new RemoteControllerDto();
 
         rcDto.id = rc.getId();
         rcDto.compatibleWith = rc.getCompatibleWith();
@@ -89,7 +93,7 @@ private final RemoteControllerRepository rcRepos;
         return rcDto;
     }
 
-    public RemoteController convertRemoteControllerDtoToRemoteController(RemoteControllerInputDto rcDto){
+    public static RemoteController convertRemoteControllerDtoToRemoteController(RemoteControllerInputDto rcDto){
         RemoteController rc = new RemoteController();
 
         rc.setCompatibleWith(rcDto.compatibleWith);
@@ -101,5 +105,4 @@ private final RemoteControllerRepository rcRepos;
 
         return rc;
     }
-
 }

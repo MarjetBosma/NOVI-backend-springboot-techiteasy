@@ -1,4 +1,5 @@
 package nl.novi.techiteasy.controllers;
+import jakarta.validation.Valid;
 import nl.novi.techiteasy.dtos.television.TelevisionDto;
 import nl.novi.techiteasy.services.TelevisionService;
 import nl.novi.techiteasy.exceptions.RecordNotFoundException;
@@ -28,17 +29,17 @@ public class TelevisionController {
 
 
     @GetMapping
-    public ResponseEntity<List<TelevisionDto>> getAllTelevisions(){
+    public ResponseEntity<List<TelevisionDto>> getAllTelevisions() {
         return ResponseEntity.ok(televisionService.getAllTelevisions());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TelevisionDto> getTelevision(@PathVariable long id){
         if (id > 0) {
-            TelevisionDto televisionDto = televisionService.getTelevisionId(id);
-            return ResponseEntity.ok(televisionDto);
+            TelevisionDto tvDto = televisionService.getTelevisionById(id);
+            return ResponseEntity.ok(tvDto);
         } else {
-            throw new RecordNotFoundException("there is no television");
+            throw new RecordNotFoundException("no television found with this id");
         }
     }
 
@@ -50,11 +51,11 @@ public class TelevisionController {
 
     }
     @PostMapping
-    public ResponseEntity<TelevisionDto> addTelevision(@RequestBody TelevisionInputDto televisionInputDto, BindingResult br){
+    public ResponseEntity<TelevisionDto> addTelevision(@RequestBody TelevisionInputDto tvInputDto, BindingResult br){
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
         } else {
-            TelevisionDto savedTelevision = televisionService.createTelevision(televisionInputDto);
+            TelevisionDto savedTelevision = televisionService.createTelevision(tvInputDto);
             URI uri = URI.create(
                     ServletUriComponentsBuilder
                             .fromCurrentRequest()
@@ -66,7 +67,13 @@ public class TelevisionController {
     @PutMapping("/{id}")
     public ResponseEntity<TelevisionDto> updateTelevision(@PathVariable long id, @RequestBody TelevisionInputDto television ) {
         TelevisionDto changeTelevisionId = televisionService.updateTelevision(id, television);
-
         return ResponseEntity.ok().body(changeTelevisionId);
     }
+
+    @PutMapping("/televisions/{id}/remotecontroller")
+    public ResponseEntity<Object> assignRemoteControllerToTelevision(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
+        TelevisionService.assignRemoteControllerToTelevision(id, input.id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
