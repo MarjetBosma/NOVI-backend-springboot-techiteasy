@@ -49,8 +49,6 @@ public class SpringSecurityConfig {
         return new ProviderManager(auth);
     }
 
-
-
     // Authorizatie met jwt
     @Bean
     protected SecurityFilterChain filter (HttpSecurity http) throws Exception {
@@ -68,10 +66,19 @@ public class SpringSecurityConfig {
                                         .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
                                         .requestMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
                                         .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
-                                        /*TODO voeg de antmatchers toe voor admin(post en delete) en user (overige)*/
-                                        /*NB: toevoegen /televisions, /remotecontrollers, /wallbrackets, /cimodules als de controllers hiervoor af zijn*/
+                                        .requestMatchers(HttpMethod.POST, "/cimodules").hasRole("ADMIN")
+                                        .requestMatchers(HttpMethod.DELETE, "/cimodules/**").hasRole("ADMIN")
+                                        .requestMatchers(HttpMethod.POST, "/remotecontrollers").hasRole("ADMIN")
+                                        .requestMatchers(HttpMethod.DELETE, "/remotecontrollers/**").hasRole("ADMIN")
+                                        .requestMatchers(HttpMethod.POST, "/televisions").hasRole("ADMIN")
+                                        .requestMatchers(HttpMethod.DELETE, "/televisions/**").hasRole("ADMIN")
+                                        .requestMatchers(HttpMethod.POST, "/wallbrackets").hasRole("ADMIN")
+                                        .requestMatchers(HttpMethod.DELETE, "/wallbrackets/**").hasRole("ADMIN")
                                         .requestMatchers("/authenticated").authenticated()
                                         .requestMatchers("/authenticate").permitAll()/*alleen dit punt mag toegankelijk zijn voor niet ingelogde gebruikers*/
+                                        .requestMatchers("/cimodules", "/remotecontrollers", "/televisions", "/wallbrackets").hasAnyRole("ADMIN", "USER")
+                                        .requestMatchers("/authenticated").authenticated()
+                                        .requestMatchers("/authenticate").permitAll()
                                         .anyRequest().denyAll() /*Deze voeg je altijd als laatste toe, om een default beveiliging te hebben voor eventuele vergeten endpoints of endpoints die je later toevoegd. */
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

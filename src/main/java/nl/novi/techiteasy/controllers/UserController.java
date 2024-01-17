@@ -73,7 +73,6 @@ public class UserController {
     }
 
     //TODO: Als Requestbody wordt hier een Map<String, Object> gebruikt om de "authorityName" binnen te halen, dat werkt, maar kun je een betere oplossing bedenken?
-    // MB: Eerlijk gezegd heb ik geen idee...
     @PostMapping(value = "/{username}/authorities")
     public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
         try {

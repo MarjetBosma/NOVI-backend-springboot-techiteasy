@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 
 @Entity
-@Table(name = "wall-bracket")
+@Table(name = "wall_brackets")
 public class WallBracket {
     @Id
     @GeneratedValue

@@ -49,6 +49,7 @@ public class Television {
     private Set<WallBracket> wallBrackets = new HashSet<>();
 
     public Television() {} // default constructor
+
     public Television(Long id, String type, String brand, String name, Double price, Double availableSize, Double refreshRate, String screenType, String screenQuality, Boolean smartTv, Boolean wifi, Boolean voiceControl, Boolean hdr, Boolean bluetooth, Boolean ambiLight, Integer originalStock, Integer sold) {
      this.id = id;
      this.type = type;

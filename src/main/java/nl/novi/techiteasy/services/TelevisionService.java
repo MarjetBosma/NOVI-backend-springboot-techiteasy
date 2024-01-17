@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class  TelevisionService {
+public class TelevisionService {
 
     private final TelevisionRepository tvRepos;
 
@@ -22,7 +22,7 @@ public class  TelevisionService {
 
     private final RemoteControllerService remoteControllerService;
 
-    private final CIModuleRepository ciModuleRepository;
+    private final CIModuleRepository cimRepos;
 
     private final CIModuleService ciModuleService;
 
@@ -30,7 +30,7 @@ public class  TelevisionService {
         this.tvRepos = tvRepos;
         this.rcRepos = rcRepos;
         this.remoteControllerService = remoteControllerService;
-        this.ciModuleRepository = ciModuleRepository;
+        this.cimRepos = ciModuleRepository;
         this.ciModuleService = ciModuleService;
     }
 
@@ -70,13 +70,11 @@ public class  TelevisionService {
         return tvDtoList;
     }
 
-
     public TelevisionDto createTelevision(TelevisionInputDto createTelevisionDto) {
         Television tv = convertTelevisionDtoToTelevision(createTelevisionDto);
         tvRepos.save(tv);
         return convertTelevisionToTelevisionDto(tv);
     }
-
 
     public TelevisionDto getTelevisionById(long id) {
         Optional<Television> televisionId = tvRepos.findById(id);
@@ -106,34 +104,7 @@ public class  TelevisionService {
         } else {
             throw new  RecordNotFoundException("no television found");
         }
-//        Optional<Television> getTelevision = tvRepos.findById(id);
-//        if (getTelevision.isEmpty()) {
-//            throw new RecordNotFoundException("No television found");
-//        } else {
-//            Television changeTelevision1 = getTelevision.get();
-//            changeTelevision1.setType(inputDto.type);
-//            changeTelevision1.setBrand(inputDto.brand);
-//            changeTelevision1.setName(inputDto.name);
-//            changeTelevision1.setPrice(inputDto.price);
-//            changeTelevision1.setAvailableSize(inputDto.availableSize);
-//            changeTelevision1.setRefreshRate(inputDto.refreshRate);
-//            changeTelevision1.setScreenType(inputDto.screenType);
-//            changeTelevision1.setScreenQuality(inputDto.screenQuality);
-//            changeTelevision1.setSmartTv(inputDto.smartTv);
-//            changeTelevision1.setWifi(inputDto.wifi);
-//            changeTelevision1.setVoiceControl(inputDto.voiceControl);
-//            changeTelevision1.setHdr(inputDto.hdr);
-//            changeTelevision1.setBluetooth(inputDto.bluetooth);
-//            changeTelevision1.setAmbiLight(inputDto.ambiLight);
-//            changeTelevision1.setOriginalStock(inputDto.originalStock);
-//            changeTelevision1.setSold(inputDto.sold);
-//            changeTelevision1.setSaleDate(inputDto.saleDate);
-//            changeTelevision1.setPurchaseDate(inputDto.purchaseDate);
-
-//            Television returnTelevision = tvRepos.save(changeTelevision1);
-//
-//            return convertTelevisionToTelevisionDto(returnTelevision);
-        }
+    }
 
     public void assignRemoteControllerToTelevision(Long id, Long remoteControllerId) {
         var optionalTelevision = tvRepos.findById(id);
@@ -152,7 +123,7 @@ public class  TelevisionService {
 
     public void assignCIModuleToTelevision(Long id, Long ciModuleId) {
         var optionalTelevision = tvRepos.findById(id);
-        var optionalCIModule = ciModuleRepository.findById(ciModuleId);
+        var optionalCIModule = cimRepos.findById(ciModuleId);
 
         if (optionalTelevision.isPresent() && optionalCIModule.isPresent()) {
             var television = optionalTelevision.get();

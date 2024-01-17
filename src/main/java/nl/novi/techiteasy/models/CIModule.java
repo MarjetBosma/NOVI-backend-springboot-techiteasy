@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 
 @Entity
-@Table(name = "ci-modules")
+@Table(name = "ciModules")
 public class CIModule {
 
     @Id

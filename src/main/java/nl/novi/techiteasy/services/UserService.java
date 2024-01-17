@@ -1,13 +1,11 @@
 package nl.novi.techiteasy.services;
 
-import ch.qos.logback.classic.encoder.JsonEncoder;
 import nl.novi.techiteasy.dtos.user.UserDto;
 import nl.novi.techiteasy.exceptions.UsernameNotFoundException;
 import nl.novi.techiteasy.models.Authority;
 import nl.novi.techiteasy.models.User;
 import nl.novi.techiteasy.repositories.UserRepository;
 import nl.novi.techiteasy.utils.RandomStringGenerator;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +14,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-// import static org.apache.logging.log4j.util.Base64Util.encoder;
-
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
     private PasswordEncoder encoder;
     // Deze staat als @Bean in de SecurityConfig en ik begreep dat ik deze zo kan gebruiken.
     // Toen ik dat probeerde op regel 117 moest ik echter wel hier een veld aanmaken, dus dat heb ik gedaan.
@@ -58,6 +53,7 @@ public class UserService {
     public String createUser(UserDto userDto) {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
         userDto.setApikey(randomString);
+        userDto.setPassword(encoder.encode(userDto.getPassword()));
         User newUser = userRepository.save(toUser(userDto));
         return newUser.getUsername();
     }
@@ -115,7 +111,7 @@ public class UserService {
         var user = new User();
 
         user.setUsername(userDto.getUsername());
-        user.setPassword(encoder.encode(userDto.password));
+        user.setPassword(userDto.getPassword());
         user.setEnabled(userDto.getEnabled());
         user.setApikey(userDto.getApikey());
         user.setEmail(userDto.getEmail());
