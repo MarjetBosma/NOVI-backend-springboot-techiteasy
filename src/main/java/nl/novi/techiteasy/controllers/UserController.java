@@ -2,15 +2,14 @@ package nl.novi.techiteasy.controllers;
 
 import nl.novi.techiteasy.dtos.user.UserDto;
 import nl.novi.techiteasy.exceptions.BadRequestException;
+import nl.novi.techiteasy.dtos.user.AuthorityRequestDto;
 import nl.novi.techiteasy.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -72,23 +71,39 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getAuthorities(username));
     }
 
-    //TODO: Als Requestbody wordt hier een Map<String, Object> gebruikt om de "authorityName" binnen te halen, dat werkt, maar kun je een betere oplossing bedenken?
+    // Vraag: Als Requestbody wordt hier een Map<String, Object> gebruikt om de "authorityName" binnen te halen, dat werkt, maar kun je een betere oplossing bedenken?
+    // Antwoord: Ja, met een DTO. Ik heb deze class AuthorityRequestDto genoemd en ondergebracht in het mapje dtos/user,
+
     @PostMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
+    public ResponseEntity<Object> addUserAuthority(
+            @PathVariable("username") String username,
+            @RequestBody AuthorityRequestDto authorityRequestDto) {
         try {
-            String authorityName = (String) fields.get("authority");
+            String authorityName = authorityRequestDto.authority;
             userService.addAuthority(username, authorityName);
             return ResponseEntity.noContent().build();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new BadRequestException();
         }
     }
+
+    // Oude versie:
+
+//    @PostMapping(value = "/{username}/authorities")
+//    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
+//        try {
+//            String authorityName = (String) fields.get("authority");
+//            userService.addAuthority(username, authorityName);
+//            return ResponseEntity.noContent().build();
+//        }
+//        catch (Exception ex) {
+//            throw new BadRequestException();
+//        }
+//    }
 
     @DeleteMapping(value = "/{username}/authorities/{authority}")
     public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
         userService.removeAuthority(username, authority);
         return ResponseEntity.noContent().build();
     }
-
 }

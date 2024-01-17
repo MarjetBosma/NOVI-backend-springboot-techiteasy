@@ -18,9 +18,6 @@ import java.util.Set;
 public class UserService {
     private final UserRepository userRepository;
     private PasswordEncoder encoder;
-    // Deze staat als @Bean in de SecurityConfig en ik begreep dat ik deze zo kan gebruiken.
-    // Toen ik dat probeerde op regel 117 moest ik echter wel hier een veld aanmaken, dus dat heb ik gedaan.
-    // Of had ik iets moeten doen met de import van regel 18?
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
