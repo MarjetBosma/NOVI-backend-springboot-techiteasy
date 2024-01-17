@@ -1,6 +1,7 @@
 package nl.novi.techiteasy.controllers;
 
 import nl.novi.techiteasy.dtos.user.UserDto;
+import nl.novi.techiteasy.dtos.user.UserResponseDto;
 import nl.novi.techiteasy.exceptions.BadRequestException;
 import nl.novi.techiteasy.dtos.authority.AuthorityDto;
 import nl.novi.techiteasy.services.UserService;
@@ -74,7 +75,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getAuthorities(username));
     }
 
-    // Vraag: Als Requestbody wordt hier een Map<String, Object> gebruikt om de "authorityName" binnen te halen, dat werkt, maar kun je een betere oplossing bedenken?
+    // Vraag in to do: Als Requestbody wordt hier een Map<String, Object> gebruikt om de "authorityName" binnen te halen, dat werkt, maar kun je een betere oplossing bedenken?
     // Antwoord: Ja, met een DTO. Ik heb deze class AuthorityDto genoemd en ondergebracht in het mapje dtos/authority,
 
     @PostMapping(value = "/{username}/authorities")
@@ -110,4 +111,22 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    // Bonusopdracht
+    // Toepassen van SecurityContextHolder en Authentication classes (zie imports), en methode getUserById toegevoegd.
+    // Ik heb een aparte ResponseDto gemaakt, die een beperkt aantal velden teruggeeft aan de gebruiker.
+    // Ben er niet meer aan toegekomen om dit uit te testen in Postman voor de deadline, maar dit wil ik nog wel gaan doen. Ben wel benieuwd of ik op de goede weg zit.
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getUserById(@PathVariable("id") String id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        if (username.equals(id)) {
+            UserDto userDto = userService.getUser(id);
+            UserResponseDto responseDto = new UserResponseDto(userDto.getUsername(), userDto.getEmail(), userDto.getAuthorities());
+            return ResponseEntity.ok(userDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
+        }
+    }
 }
