@@ -2,9 +2,12 @@ package nl.novi.techiteasy.controllers;
 
 import nl.novi.techiteasy.dtos.user.UserDto;
 import nl.novi.techiteasy.exceptions.BadRequestException;
-import nl.novi.techiteasy.dtos.user.AuthorityRequestDto;
+import nl.novi.techiteasy.dtos.authority.AuthorityDto;
 import nl.novi.techiteasy.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -72,14 +75,14 @@ public class UserController {
     }
 
     // Vraag: Als Requestbody wordt hier een Map<String, Object> gebruikt om de "authorityName" binnen te halen, dat werkt, maar kun je een betere oplossing bedenken?
-    // Antwoord: Ja, met een DTO. Ik heb deze class AuthorityRequestDto genoemd en ondergebracht in het mapje dtos/user,
+    // Antwoord: Ja, met een DTO. Ik heb deze class AuthorityDto genoemd en ondergebracht in het mapje dtos/authority,
 
     @PostMapping(value = "/{username}/authorities")
     public ResponseEntity<Object> addUserAuthority(
             @PathVariable("username") String username,
-            @RequestBody AuthorityRequestDto authorityRequestDto) {
+            @RequestBody AuthorityDto authorityDto) {
         try {
-            String authorityName = authorityRequestDto.authority;
+            String authorityName = authorityDto.authority;
             userService.addAuthority(username, authorityName);
             return ResponseEntity.noContent().build();
         } catch (Exception ex) {
@@ -106,4 +109,5 @@ public class UserController {
         userService.removeAuthority(username, authority);
         return ResponseEntity.noContent().build();
     }
+
 }
