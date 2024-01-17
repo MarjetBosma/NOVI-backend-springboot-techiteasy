@@ -34,7 +34,7 @@ private static RemoteControllerRepository rcRepos;
         return rcDtoList;
     }
 
-    public static RemoteControllerDto createRemoteController(RemoteControllerInputDto createRemoteControllerDto){
+    public RemoteControllerDto createRemoteController(RemoteControllerInputDto createRemoteControllerDto){
         RemoteController rcInputDto = convertRemoteControllerDtoToRemoteController(createRemoteControllerDto);
         rcRepos.save(rcInputDto);
         return convertRemoteControllerToRemoteControllerDto(rcInputDto);
@@ -51,7 +51,7 @@ private static RemoteControllerRepository rcRepos;
         return null;
     }
 
-    public static RemoteControllerDto updateRemoteController(Long id, RemoteControllerInputDto rcDto) {
+    public RemoteControllerDto updateRemoteController(Long id, RemoteControllerInputDto rcDto) {
         if (!rcRepos.existsById(id)) {
             throw new RecordNotFoundException("No remote controller found");
         } else {
@@ -79,7 +79,7 @@ private static RemoteControllerRepository rcRepos;
         }
     }
 
-    public static RemoteControllerDto convertRemoteControllerToRemoteControllerDto(RemoteController rc) {
+    public RemoteControllerDto convertRemoteControllerToRemoteControllerDto(RemoteController rc) {
         RemoteControllerDto rcDto = new RemoteControllerDto();
 
         rcDto.id = rc.getId();
@@ -93,7 +93,7 @@ private static RemoteControllerRepository rcRepos;
         return rcDto;
     }
 
-    public static RemoteController convertRemoteControllerDtoToRemoteController(RemoteControllerInputDto rcDto){
+    public RemoteController convertRemoteControllerDtoToRemoteController(RemoteControllerInputDto rcDto){
         RemoteController rc = new RemoteController();
 
         rc.setCompatibleWith(rcDto.compatibleWith);

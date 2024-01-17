@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 
 @Entity
-@Table(name = "remote-controller")
+@Table(name = "remotecontroller")
 public class RemoteController {
     @Id
     @GeneratedValue

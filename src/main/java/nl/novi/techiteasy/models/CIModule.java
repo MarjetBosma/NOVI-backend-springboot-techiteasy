@@ -22,7 +22,7 @@ public class CIModule {
     private String type;
     private Double price;
 
-    @OneToMany(mappedBy = "CIModule")
+    @OneToMany(mappedBy = "ciModule")
     private Set<Television> televisions = new HashSet<>();
 
     public CIModule(Long id, String name, String type, Double price) {

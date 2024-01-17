@@ -40,7 +40,7 @@ public class CIModuleService {
         }
     }
 
-    public static CIModuleDto createCIModule(CIModuleInputDto createCIModuleDto){
+    public CIModuleDto createCIModule(CIModuleInputDto createCIModuleDto){
         CIModule ciInputDto = convertCIModuleDtoToCIModule(createCIModuleDto);
         cimRepos.save(ciInputDto);
         return convertCIModuleToCIModuleDto(ciInputDto);
@@ -65,7 +65,7 @@ public class CIModuleService {
         }
     }
 
-    public static CIModuleDto updateCIModule(Long id, CIModuleInputDto ciDto) {
+    public CIModuleDto updateCIModule(Long id, CIModuleInputDto ciDto) {
         if (cimRepos.existsById(id)) {
             throw new RecordNotFoundException("No CI-module found");
         } else {
@@ -80,7 +80,7 @@ public class CIModuleService {
         return null;
     }
 
-    public static CIModuleDto convertCIModuleToCIModuleDto(CIModule ci) {
+    public CIModuleDto convertCIModuleToCIModuleDto(CIModule ci) {
         CIModuleDto ciDto = new CIModuleDto();
 
         ciDto.id = ci.getId();
@@ -91,7 +91,7 @@ public class CIModuleService {
         return ciDto;
     }
 
-    public static CIModule convertCIModuleDtoToCIModule(CIModuleInputDto ciDto) {
+    public CIModule convertCIModuleDtoToCIModule(CIModuleInputDto ciDto) {
         CIModule ci = new CIModule();
 
         ci.setName(ciDto.name);

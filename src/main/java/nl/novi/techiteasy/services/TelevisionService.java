@@ -60,10 +60,10 @@ public class  TelevisionService {
         for(Television tv : televisions) {
             TelevisionDto tvDto = convertTelevisionToTelevisionDto(tv);
             if(tv.getCiModule() != null){
-                tvDto.setCiModuleDto(ciModuleService.convertCIModuleToCIModuleDto(tv.getCiModule()));
+                tvDto.ciModuleDto = ciModuleService.convertCIModuleToCIModuleDto(tv.getCiModule());
             }
             if(tv.getRemoteController() != null){
-                tvDto.setRemoteControllerDto(remoteControllerService.convertRemoteControllerToRemoteControllerDto(tv.getRemoteController()));
+                tvDto.remoteControllerDto = remoteControllerService.convertRemoteControllerToRemoteControllerDto(tv.getRemoteController());
             }
             tvDtoList.add(tvDto);
         }
@@ -72,7 +72,7 @@ public class  TelevisionService {
 
 
     public TelevisionDto createTelevision(TelevisionInputDto createTelevisionDto) {
-        Television tv = dtoTransferToTelevision(createTelevisionDto);
+        Television tv = convertTelevisionDtoToTelevision(createTelevisionDto);
         tvRepos.save(tv);
         return convertTelevisionToTelevisionDto(tv);
     }
@@ -192,7 +192,7 @@ public class  TelevisionService {
         tvDto.purchaseDate = tv.getPurchaseDate();
 
         if (tv.getCiModule() != null) {
-            tvDto.setCiModuleDto(CIModuleService.convertCIModuleToCIModuleDto(tv.getCiModule()));
+            tvDto.ciModuleDto = ciModuleService.convertCIModuleToCIModuleDto(tv.getCiModule());
         }
 
         return tvDto;

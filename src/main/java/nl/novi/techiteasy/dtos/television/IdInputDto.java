@@ -1,4 +1,4 @@
-package nl.novi.techiteasy.dtos.user;
+package nl.novi.techiteasy.dtos.television;
 
 import jakarta.validation.constraints.NotNull;
 

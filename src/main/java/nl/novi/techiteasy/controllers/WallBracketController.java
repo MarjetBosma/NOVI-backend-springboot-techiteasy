@@ -46,7 +46,7 @@ public class WallBracketController {
             throw new ValidationException(checkForBindingResult(br));
         } else {
             WallBracketDto savedWallBracket;
-            savedWallBracket = WallBracketService.createWallBracket(wbInputDto);
+            savedWallBracket = wallBracketService.addWallBracket(wbInputDto);
             URI uri = URI.create(
                     ServletUriComponentsBuilder
                             .fromCurrentRequest()

@@ -25,5 +25,3 @@ public class TelevisionWallBracketController {
         return ResponseEntity.created(null).body(key);
     }
 }
-
-}

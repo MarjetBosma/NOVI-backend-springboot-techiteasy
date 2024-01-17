@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
-public class TelevisionWallBracketKey {
 
     @Embeddable
     public class TelevisionWallBracketKey implements Serializable {
@@ -49,4 +48,4 @@ public class TelevisionWallBracketKey {
         public int hashCode() {return Objects.hash(televisionId, wallBracketId);}
     }
 
-}
+

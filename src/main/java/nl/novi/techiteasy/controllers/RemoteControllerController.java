@@ -47,7 +47,7 @@ public class RemoteControllerController {
             throw new ValidationException(checkForBindingResult(br));
         } else {
             RemoteControllerDto savedRemoteController;
-            savedRemoteController = RemoteControllerService.createRemoteController(rcInputDto);
+            savedRemoteController = remoteControllerService.createRemoteController(rcInputDto);
             URI uri = URI.create(
                     ServletUriComponentsBuilder
                             .fromCurrentRequest()
@@ -58,7 +58,7 @@ public class RemoteControllerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<RemoteControllerDto> updateRemoteController(@PathVariable long id, @RequestBody RemoteControllerInputDto remoteController ) {
-        RemoteControllerDto changeRemoteControllerId = RemoteControllerService.updateRemoteController(id, remoteController);
+        RemoteControllerDto changeRemoteControllerId = remoteControllerService.updateRemoteController(id, remoteController);
 
         return ResponseEntity.ok().body(changeRemoteControllerId);
     }

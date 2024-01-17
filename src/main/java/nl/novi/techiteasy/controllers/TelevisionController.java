@@ -1,5 +1,6 @@
 package nl.novi.techiteasy.controllers;
 import jakarta.validation.Valid;
+import nl.novi.techiteasy.dtos.television.IdInputDto;
 import nl.novi.techiteasy.dtos.television.TelevisionDto;
 import nl.novi.techiteasy.services.TelevisionService;
 import nl.novi.techiteasy.exceptions.RecordNotFoundException;
@@ -72,7 +73,7 @@ public class TelevisionController {
 
     @PutMapping("/televisions/{id}/remotecontroller")
     public ResponseEntity<Object> assignRemoteControllerToTelevision(@PathVariable("id") Long id,@Valid @RequestBody IdInputDto input) {
-        TelevisionService.assignRemoteControllerToTelevision(id, input.id);
+        televisionService.assignRemoteControllerToTelevision(id, input.id);
         return ResponseEntity.noContent().build();
     }
 

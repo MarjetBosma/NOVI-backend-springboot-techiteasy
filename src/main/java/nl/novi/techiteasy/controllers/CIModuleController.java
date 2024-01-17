@@ -47,7 +47,7 @@ public class CIModuleController {
             throw new ValidationException(checkForBindingResult(br));
         } else {
             CIModuleDto savedCIModule;
-            savedCIModule = CIModuleService.createCIModule(ciInputDto);
+            savedCIModule = ciModuleService.createCIModule(ciInputDto);
             URI uri = URI.create(
                     ServletUriComponentsBuilder
                             .fromCurrentRequest()
@@ -58,7 +58,7 @@ public class CIModuleController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CIModuleDto> updateCIModule(@PathVariable long id, @RequestBody CIModuleInputDto ciModule ) {
-        CIModuleDto changeCIModuleId = CIModuleService.updateCIModule(id, ciModule);
+        CIModuleDto changeCIModuleId = ciModuleService.updateCIModule(id, ciModule);
 
         return ResponseEntity.ok().body(changeCIModuleId);
     }
