@@ -46,13 +46,12 @@ public class TelevisionController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Television> deleteTelevision(@PathVariable long id){
-
         televisionService.deleteTelevision(id);
         return ResponseEntity.noContent().build();
 
     }
     @PostMapping
-    public ResponseEntity<TelevisionDto> addTelevision(@RequestBody TelevisionInputDto tvInputDto, BindingResult br){
+    public ResponseEntity<TelevisionDto> addTelevision(@Valid @RequestBody TelevisionInputDto tvInputDto, BindingResult br){
         if (br.hasFieldErrors()) {
             throw new ValidationException(checkForBindingResult(br));
         } else {

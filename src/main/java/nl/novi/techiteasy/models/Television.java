@@ -69,6 +69,9 @@ public class Television {
      this.originalStock = originalStock;
      this.sold = sold;
     }
-    // Getters en setters via Lombok
 
-   }
+ public Television(Long id, String name, int price) {} // extra  controller t.b.v. unittests
+
+ // Getters en setters via Lombok
+
+}

@@ -1,5 +1,6 @@
 package nl.novi.techiteasy.controllers;
 
+import jakarta.validation.Valid;
 import nl.novi.techiteasy.dtos.wallbracket.WallBracketDto;
 import nl.novi.techiteasy.dtos.wallbracket.WallBracketInputDto;
 import nl.novi.techiteasy.exceptions.RecordNotFoundException;
@@ -64,12 +65,8 @@ public class WallBracketController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteWallBracket(@PathVariable("id") Long id) {
-        Boolean check = wallBracketService.deleteWallBracket(id);
-        if(check) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.badRequest().body("Cannot delete, this id does not exist");
+
+        wallBracketService.deleteWallBracket(id);
+        return ResponseEntity.noContent().build();
         }
     }
-
-}

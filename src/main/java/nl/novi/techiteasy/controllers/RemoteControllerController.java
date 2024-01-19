@@ -65,11 +65,7 @@ public class RemoteControllerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteRemoteController(@PathVariable("id") Long id) {
-        Boolean check = remoteControllerService.deleteRemoteController(id);
-        if(check) {
+            remoteControllerService.deleteRemoteController(id);
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.badRequest().body("Cannot delete, this id does not exist");
-        }
     }
 }
