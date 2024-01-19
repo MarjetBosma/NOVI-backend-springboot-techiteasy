@@ -1,5 +1,7 @@
 package nl.novi.techiteasy.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.novi.techiteasy.dtos.television.TelevisionDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +30,8 @@ class TelevisionControllerIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;
+    @Autowired
+    ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -56,7 +60,11 @@ class TelevisionControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
 
-        String createdId = result.getResponse().getContentAsString();
-        assertThat(result.getResponse().getHeader("Location"), matchesPattern("^.*/televisions/" + 1));
+        String jsonResponse = result.getResponse().getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(jsonResponse);
+        String createdId = jsonNode.get("id").asText();
+
+
+        assertThat(result.getResponse().getHeader("Location"), matchesPattern("^.*/televisions/" + createdId));
     }
 }
