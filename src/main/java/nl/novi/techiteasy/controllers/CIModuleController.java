@@ -65,11 +65,7 @@ public class CIModuleController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCIModule(@PathVariable("id") Long id) {
-        Boolean check = ciModuleService.deleteCIModule(id);
-        if(check) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.badRequest().body("Cannot delete, this id does not exist");
-        }
+        ciModuleService.deleteCIModule(id);
+        return ResponseEntity.noContent().build();
     }
 }

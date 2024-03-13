@@ -51,17 +51,22 @@ public class CIModuleService {
         return convertCIModuleToCIModuleDto(ci);
     }
 
-    public Boolean deleteCIModule(Long id) {
-        cimRepos.deleteById(id);
-        return null;
+    public void deleteCIModule(Long id) {
+        Optional<CIModule> ci = cimRepos.findById(id);
+        if (ci.isPresent()) {
+            cimRepos.deleteById(id);
+        } else {
+            throw new RecordNotFoundException("No CI-module found with id " + id);
+        }
     }
+
     public CIModuleDto getCIModuleId(long id) {
         Optional<CIModule> ciModuleId = cimRepos.findById(id);
         if (ciModuleId.isPresent()) {
             CIModule ci = ciModuleId.get();
             return convertCIModuleToCIModuleDto(ci);
         } else {
-            throw new RecordNotFoundException("No remote controller found");
+            throw new RecordNotFoundException("No remote controller found with id " + id);
         }
     }
 

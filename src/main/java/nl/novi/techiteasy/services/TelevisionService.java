@@ -71,9 +71,9 @@ public class TelevisionService {
     }
 
     public TelevisionDto createTelevision(TelevisionInputDto createTelevisionDto) {
-        Television tv = convertTelevisionDtoToTelevision(createTelevisionDto);
-        tvRepos.save(tv);
-        return convertTelevisionToTelevisionDto(tv);
+        Television tvInputDto = convertTelevisionDtoToTelevision(createTelevisionDto);
+        tvRepos.save(tvInputDto);
+        return convertTelevisionToTelevisionDto(tvInputDto);
     }
 
     public TelevisionDto getTelevisionById(long id) {
@@ -82,21 +82,23 @@ public class TelevisionService {
             Television tv = televisionId.get();
             return convertTelevisionToTelevisionDto(tv);
         } else {
-            throw new RecordNotFoundException("No television found with id ");
+            throw new RecordNotFoundException("No television found with id " + id);
         }
     }
 
     public void deleteTelevision(long id) {
-        tvRepos.deleteById(id);
+        Optional<Television> tv =  tvRepos.findById(id);
+        if (tv.isPresent()) {
+            tvRepos.deleteById(id);
+        } else {
+            throw new RecordNotFoundException("No television found with id " + id);
+        }
     }
 
-    // aanpassen
     public TelevisionDto updateTelevision(long id, TelevisionInputDto inputDto) {
 
         if (tvRepos.findById(id).isPresent()) {
-
             Television tv = tvRepos.findById(id).get();
-
             Television tv1 = convertTelevisionDtoToTelevision(inputDto);
             tv1.setId(tv.getId());
             tvRepos.save(tv1);

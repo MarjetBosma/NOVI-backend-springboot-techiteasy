@@ -35,9 +35,13 @@ public class WallBracketService {
         return convertWallBracketToWallBracketDto(wb);
     }
 
-    public Boolean deleteWallBracket(Long id) {
-        wbRepos.deleteById(id);
-        return null;
+    public void deleteWallBracket(Long id) {
+        Optional<WallBracket> wb = wbRepos.findById(id);
+        if (wb.isPresent()) {
+            wbRepos.deleteById(id);
+        } else {
+            throw new RecordNotFoundException("No wall bracket found with id " + id);
+        }
     }
 
     public static WallBracketDto updateWallBracket(Long id, WallBracketInputDto wbDto) {

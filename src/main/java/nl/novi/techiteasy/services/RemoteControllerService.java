@@ -46,14 +46,18 @@ private static RemoteControllerRepository rcRepos;
         return convertRemoteControllerToRemoteControllerDto(rc);
     }
 
-    public Boolean deleteRemoteController(long id) {
-        rcRepos.deleteById(id);
-        return null;
+    public void deleteRemoteController(long id) {
+        Optional<RemoteController> rc = rcRepos.findById(id);
+        if (rc.isPresent()) {
+            rcRepos.deleteById(id);
+        } else {
+            throw new RecordNotFoundException("No remote controller found with id " + id);
+        };
     }
 
     public RemoteControllerDto updateRemoteController(Long id, RemoteControllerInputDto rcDto) {
         if (!rcRepos.existsById(id)) {
-            throw new RecordNotFoundException("No remote controller found");
+            throw new RecordNotFoundException("No remote controller found with id " + id);
         } else {
             RemoteController storedRemoteController = rcRepos.findById(id).orElse(null);
             assert storedRemoteController != null;
