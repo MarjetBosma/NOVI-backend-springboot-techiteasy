@@ -1,8 +1,11 @@
-package nl.novi.techiteasy.dtos;
+package nl.novi.techiteasy.dtos.television;
+
+import nl.novi.techiteasy.dtos.cimodule.CIModuleDto;
+import nl.novi.techiteasy.dtos.remotecontroller.RemoteControllerDto;
 
 import java.time.LocalDate;
-
 public class TelevisionDto {
+
     public Long id;
     public String type;
     public String brand;
@@ -23,6 +26,9 @@ public class TelevisionDto {
     public Integer sold;
     public LocalDate saleDate;
     public LocalDate purchaseDate;
+
+    public CIModuleDto ciModuleDto;
+    public RemoteControllerDto remoteControllerDto;
 
 }
 
